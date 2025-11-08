@@ -24,9 +24,9 @@
 // Using a full React import to ensure this file is treated as a module,
 // which is required for module augmentation to work correctly.
 import React from 'react';
-// FIX: The `import type {}` was not sufficient for TypeScript to find the module
-// for augmentation. A side-effect import is needed to make the module's declarations available.
-import '@vis.gl/react-google-maps';
+// FIX: An import from the module is needed for module augmentation to work.
+// Using an empty import to ensure the module is recognized by TypeScript.
+import {} from '@vis.gl/react-google-maps';
 
 // add an overload signature for the useMapsLibrary hook, so typescript
 // knows what the 'maps3d' library is.
