@@ -345,23 +345,53 @@ export interface FavoriteProject {
       avg_size_sqft: number;
     }[];
   };
+  starting_price: number;
+  project_type: string;
+  propertyType: string;
+  service_charge: number;
 }
 
 export const useFavoritesStore = create(
   persist<{
     favorites: FavoriteProject[];
-    addProject: (project: Omit<FavoriteProject, 'id'>) => void;
+    addProject: (project: Omit<FavoriteProject, 'id' | 'notes'>) => void;
     updateNotes: (projectId: string, notes: string) => void;
+    removeProject: (projectId: string) => void;
   }>(
     (set) => ({
       favorites: [],
-      addProject: (project) => set((state) => ({
-        favorites: [...state.favorites, { ...project, id: `${project.name}-${Date.now()}`}]
-      })),
+      addProject: (project) => set((state) => {
+        const existingIndex = state.favorites.findIndex(
+          (p) => p.name.toLowerCase() === project.name.toLowerCase()
+        );
+
+        if (existingIndex > -1) {
+          // Project exists, update it.
+          const updatedFavorites = [...state.favorites];
+          const existingProject = updatedFavorites[existingIndex];
+          // Preserve the original ID and any notes the user has already made.
+          updatedFavorites[existingIndex] = {
+            ...existingProject, // Keep old id and notes
+            ...project, // Overwrite with new data
+          };
+          return { favorites: updatedFavorites };
+        } else {
+          // Project doesn't exist, add it as new.
+          const newProject = { 
+            ...project, 
+            id: `${project.name}-${Date.now()}`,
+            notes: '' // Start with empty notes
+          };
+          return { favorites: [...state.favorites, newProject] };
+        }
+      }),
       updateNotes: (projectId, notes) => set((state) => ({
         favorites: state.favorites.map(p => 
           p.id === projectId ? { ...p, notes } : p
         )
+      })),
+      removeProject: (projectId) => set((state) => ({
+        favorites: state.favorites.filter(p => p.id !== projectId)
       })),
     }),
     {

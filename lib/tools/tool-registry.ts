@@ -72,7 +72,7 @@ type Project = {
 
 const realEstateProjects: Record<string, Project[]> = {
   'the oasis by emaar': [
-    { name: 'Palmiera Villas', type: 'Villas', position: { lat: 24.9930, lng: 55.3050 }, amenities: ['Private Lagoon Access', 'Community Parks', 'Fitness Centers', 'Gated Community'], location_description: 'Luxurious villas nestled within a green oasis with swimmable lagoons.', launch_date: '2023-06-01', handover_date_normalized: '2026-12-31', project_type: 'Off-plan', starting_price: 8000000, currency_code: 'AED', service_charge: 5, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Palmiera+Villas', project_specs: { avg_price_per_sqft: 1600, unit_types: [ { unit_type: '4 BR Villa', avg_size_sqft: 5000 }, { unit_type: '5 BR Villa', avg_size_sqft: 6000 } ] } },
+    { name: 'Palmiera Villas', type: 'Villas', position: { lat: 24.9930, lng: 55.3050 }, amenities: ['Private Lagoon Access', 'Community Parks', 'Fitness Centers', 'Gated Community'], location_description: 'Luxurious villas nestled within a green oasis with swimmable lagoons.', launch_date: '2023-06-01', handover_date_normalized: '2026-12-31', project_type: 'Off-plan', starting_price: 8000000, currency_code: 'AED', service_charge: 5, is_freehold: true, project_image_url: 'https://cdn.properties.emaar.com/wp-content/uploads/2024/05/PRO_EXT_1-1-670x500.jpg', project_specs: { avg_price_per_sqft: 1600, unit_types: [ { unit_type: '4 BR Villa', avg_size_sqft: 5000 }, { unit_type: '5 BR Villa', avg_size_sqft: 6000 } ] } },
     { name: 'Mirage at The Oasis', type: 'Villas', position: { lat: 24.9920, lng: 55.3040 }, amenities: ['Resort-style Pool', 'Kids Play Area', 'Landscaped Gardens', '24/7 Security'], location_description: 'Exclusive waterfront villas offering a serene and upscale lifestyle.', launch_date: '2023-09-10', handover_date_normalized: '2027-03-31', project_type: 'Off-plan', starting_price: 9500000, currency_code: 'AED', service_charge: 5, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Mirage+at+The+Oasis', project_specs: { avg_price_per_sqft: 1750, unit_types: [ { unit_type: '5 BR Villa', avg_size_sqft: 5500 }, { unit_type: '6 BR Villa', avg_size_sqft: 7000 } ] } },
     { name: 'Armonia Villas', type: 'Villas', position: { lat: 24.9940, lng: 55.3060 }, amenities: ['Linear Park', 'Community Center', 'Swimmable Lagoon', 'Gated Community'], location_description: 'A new cluster of luxury villas with a focus on harmonious living and nature.', launch_date: '2024-03-01', handover_date_normalized: '2027-09-30', project_type: 'Off-plan', starting_price: 10000000, currency_code: 'AED', service_charge: 5, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Armonia+Villas', project_specs: { avg_price_per_sqft: 1800, unit_types: [ { unit_type: '4 BR Villa', avg_size_sqft: 5600 }, { unit_type: '5 BR Villa', avg_size_sqft: 6500 } ] } },
     { name: 'Faux Rental Villa 1', type: 'Villas', position: { lat: 24.9950, lng: 55.3070 }, amenities: ['Community Pool', 'Playground', '24/7 Security'], location_description: 'A spacious villa available for rent in a family-friendly community.', launch_date: '2022-01-01', handover_date_normalized: '2023-01-01', project_type: 'For Rent', starting_price: 450000, currency_code: 'AED', service_charge: 0, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Rental+Villa' },
@@ -130,9 +130,10 @@ const realEstateProjects: Record<string, Project[]> = {
     { name: 'St. Regis Residences', type: 'Apartments', position: { lat: 25.1915, lng: 55.2795 }, amenities: ['St. Regis Butler Service', 'F&B Outlets', 'Cigar Lounge', 'Cognac Room'], location_description: 'Ultra-luxury apartments in the Opera District with premium services and amenities.', launch_date: '2022-01-01', handover_date_normalized: '2026-12-31', project_type: 'Off-plan', starting_price: 2500000, currency_code: 'AED', service_charge: 28, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=St+Regis', project_specs: { avg_price_per_sqft: 3000, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 900 }, { unit_type: '2 BR', avg_size_sqft: 1400 } ] } },
     { name: 'The Address Opera', type: 'Apartments', position: { lat: 25.1905, lng: 55.2780 }, amenities: ['Serviced Living', 'Pool with Burj Khalifa Views', 'Health Club', 'Concierge Service'], location_description: 'Serviced apartments offering five-star hotel amenities in the heart of the Opera District.', launch_date: '2016-01-01', handover_date_normalized: '2022-01-01', project_type: 'Ready', starting_price: 3000000, currency_code: 'AED', service_charge: 26, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=The+Address+Opera', project_specs: { avg_price_per_sqft: 3200, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 850 }, { unit_type: '2 BR', avg_size_sqft: 1350 } ] } },
     { name: 'Burj Khalifa Residences', type: 'Apartments', position: { lat: 25.1972, lng: 55.2744 }, amenities: ['Direct Dubai Mall Access', 'Valet Parking', 'Sky Lobbies', 'Indoor & Outdoor Pools', 'Jacuzzis'], location_description: 'Iconic residences within the world\'s tallest building, offering ultimate prestige and luxury.', launch_date: '2009-01-01', handover_date_normalized: '2010-01-04', project_type: 'Ready', starting_price: 5000000, currency_code: 'AED', service_charge: 30, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Burj+Khalifa', project_specs: { avg_price_per_sqft: 4500, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 1100 }, { unit_type: '2 BR', avg_size_sqft: 2000 } ] } },
-    { name: 'Opera Grand', type: 'Apartments', position: { lat: 25.1925, lng: 55.2785 }, amenities: ['Rooftop Pool', 'Health Club', 'Retail Outlets', 'Kids Play Area', 'Views of Dubai Fountain'], location_description: 'A 66-storey tower in the Opera District with stunning views of the Burj Khalifa and Dubai Fountain.', launch_date: '2015-05-12', handover_date_normalized: '2020-03-31', project_type: 'Ready', starting_price: 2500000, currency_code: 'AED', service_charge: 24, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Opera+Grand', project_specs: { avg_price_per_sqft: 2800, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 800 }, { unit_type: '2 BR', avg_size_sqft: 1500 } ] } },
+    { name: 'Opera Grand', type: 'Apartments', position: { lat: 25.1925, lng: 55.2785 }, amenities: ['Rooftop Pool', 'Health Club', 'Retail Outlets', 'Kids Play Area', 'Views of Dubai Fountain'], location_description: 'A 66-storey tower in the Opera District with stunning views of the Burj Khalifa and The Dubai Fountain.', launch_date: '2015-05-12', handover_date_normalized: '2020-03-31', project_type: 'Ready', starting_price: 2500000, currency_code: 'AED', service_charge: 24, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Opera+Grand', project_specs: { avg_price_per_sqft: 2800, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 800 }, { unit_type: '2 BR', avg_size_sqft: 1500 } ] } },
     { name: 'Burj Royale', type: 'Apartments', position: { lat: 25.1920, lng: 55.2790 }, amenities: ['Swimming Pool', 'Fully Equipped Gym', 'BBQ Area', 'Community Park', 'Observation Deck'], location_description: 'The last residential tower with direct views of the Burj Khalifa and The Dubai Fountain.', launch_date: '2018-11-01', handover_date_normalized: '2022-10-31', project_type: 'Ready', starting_price: 1500000, currency_code: 'AED', service_charge: 22, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Burj+Royale', project_specs: { avg_price_per_sqft: 2200, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 650 }, { unit_type: '2 BR', avg_size_sqft: 1000 } ] } },
     { name: 'Grande', type: 'Apartments', position: { lat: 25.1900, lng: 55.2770 }, amenities: ['Infinity Pool', 'Yoga Room', 'Kids\' Play Area', 'State-of-the-art Fitness Centre', 'Health Club'], location_description: 'A 71-storey residential tower in The Opera District offering premium finishes and spectacular views.', launch_date: '2018-05-13', handover_date_normalized: '2023-03-31', project_type: 'Ready', starting_price: 1800000, currency_code: 'AED', service_charge: 25, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Grande', project_specs: { avg_price_per_sqft: 2400, unit_types: [ { unit_type: '1 BR', avg_size_sqft: 700 }, { unit_type: '2 BR', avg_size_sqft: 1100 } ] } },
+    { name: 'Burj Views', type: 'Apartments', position: { lat: 25.1885, lng: 55.2770 }, amenities: ['Shared Swimming Pool', 'Gymnasium', 'Retail Centre', 'Business Centre', '24/7 Security'], location_description: 'A three-tower residential complex in Downtown Dubai, offering views of the Burj Khalifa and easy access to the Dubai Mall.', launch_date: '2005-01-01', handover_date_normalized: '2009-12-31', project_type: 'Ready', starting_price: 1800000, currency_code: 'AED', service_charge: 20, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=Burj+Views', project_specs: { avg_price_per_sqft: 1900, unit_types: [ { unit_type: 'Studio', avg_size_sqft: 600 }, { unit_type: '1 BR', avg_size_sqft: 900 }, { unit_type: '2 BR', avg_size_sqft: 1400 } ] } },
     { name: 'South Ridge Towers', type: 'Apartments', position: { lat: 25.1890, lng: 55.2760 }, amenities: ['Swimming Pool', 'Gymnasium', 'Squash Courts', 'Badminton Court'], location_description: 'A popular cluster of 6 towers offering apartments for rent with easy access to the boulevard.', launch_date: '2005-01-01', handover_date_normalized: '2008-01-01', project_type: 'For Rent', starting_price: 140000, currency_code: 'AED', service_charge: 0, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=South+Ridge+Rental' },
     { name: 'The Lofts', type: 'Apartments', position: { lat: 25.1930, lng: 55.2800 }, amenities: ['Leisure Deck', 'Lap Pool', 'Gym', 'Multipurpose Room'], location_description: 'A complex of three towers offering stylish apartments for rent with a unique, modern design.', launch_date: '2005-01-01', handover_date_normalized: '2009-01-01', project_type: 'For Rent', starting_price: 130000, currency_code: 'AED', service_charge: 0, is_freehold: true, project_image_url: 'https://placehold.co/600x400/1C1F21/E1E2E3?text=The+Lofts+Rental' },
   ],
@@ -407,8 +408,8 @@ const findProjects: ToolImplementation = async (args, context) => {
     return `I don't have project data for "${communityName}" right now.`;
   }
   
-  const filteredProjects = projectsInCommunity.filter(
-    p => p.type.toLowerCase().includes(projectType.toLowerCase())
+  const filteredProjects = projectsInCommunity.filter(p =>
+    projectType.toLowerCase().includes(p.type.toLowerCase())
   );
 
   if (filteredProjects.length === 0) {
@@ -470,12 +471,20 @@ const addProjectToFavorites: ToolImplementation = async (args) => {
   if (!projectName || !communityName) {
     return 'Missing project name or community name to add to favorites.';
   }
-  
-  // 1. Find the project in the mock data to get its image URL.
-  let foundProject: Project | null = null;
+
   const projectKey = projectName.toLowerCase();
+  
+  // 1. Check if the project is already a favorite to determine the response message.
+  const { favorites } = useFavoritesStore.getState();
+  const isAlreadyFavorite = favorites.some(
+    (f) => f.name.toLowerCase() === projectKey
+  );
+  
+  // 2. Find the project in the mock data to get its image URL and other details.
+  let foundProject: Project | null = null;
+
   for (const community in realEstateProjects) {
-    const project = (realEstateProjects as Record<string, Project[]>)[community].find(p => p.name.toLowerCase() === projectKey);
+    const project = (realEstateProjects as Record<string, Project[]>)[community].find(p => p.name.toLowerCase().includes(projectKey));
     if (project) {
         foundProject = project;
         break;
@@ -486,16 +495,13 @@ const addProjectToFavorites: ToolImplementation = async (args) => {
       return `Sorry, I couldn't find details for "${projectName}" to add it to your favorites.`;
   }
 
-  const imageUrl = foundProject.project_image_url;
-
-  // 2. Extract key features from the recent conversation history.
+  // 3. Extract key features from the recent conversation history.
   const { turns } = useLogStore.getState();
   const recentTurns = turns.slice(-4);
   const features = new Set<string>();
 
   recentTurns.forEach(turn => {
     if (turn.role === 'agent') {
-      // Look for Markdown list items as a primary source of features.
       const listItems = turn.text.match(/(\*|-)\s(.*?)(?=\n|$)/g);
       if (listItems) {
         listItems.forEach(item => features.add(item.replace(/(\*|-)\s/, '').trim()));
@@ -503,7 +509,7 @@ const addProjectToFavorites: ToolImplementation = async (args) => {
     }
   });
 
-  // 3. Fallback to project amenities if no features are found in the conversation.
+  // 4. Fallback to project amenities if no features are found in the conversation.
   if (features.size === 0 && foundProject.amenities.length > 0) {
     foundProject.amenities.slice(0, 3).forEach(amenity => features.add(amenity));
   } else if (features.size === 0) {
@@ -511,16 +517,24 @@ const addProjectToFavorites: ToolImplementation = async (args) => {
     features.add("Prime location in " + communityName);
   }
 
-  // 4. Add the project to the favorites store.
+  // 5. Add/Update the project in the favorites store.
   useFavoritesStore.getState().addProject({
     name: projectName,
     community: communityName,
-    imageUrl,
+    imageUrl: foundProject.project_image_url,
     features: Array.from(features),
-    notes: '',
     project_specs: foundProject.project_specs,
+    starting_price: foundProject.starting_price,
+    project_type: foundProject.project_type,
+    propertyType: foundProject.type,
+    service_charge: foundProject.service_charge,
   });
 
+  // 6. Return the appropriate message to the user.
+  if (isAlreadyFavorite) {
+    return `I've updated the details for ${projectName} in your favorites list.`;
+  }
+  
   return `I've added ${projectName} to your favorites list. You can view it and add notes in the sidebar.`;
 };
 
@@ -539,7 +553,7 @@ const getProjectDetails: ToolImplementation = async (args) => {
 
   // Search through all communities to find the project
   for (const community in realEstateProjects) {
-    const project = (realEstateProjects as Record<string, Project[]>)[community].find(p => p.name.toLowerCase() === projectKey);
+    const project = (realEstateProjects as Record<string, Project[]>)[community].find(p => p.name.toLowerCase().includes(projectKey));
     if (project) {
       foundProject = project;
       break;

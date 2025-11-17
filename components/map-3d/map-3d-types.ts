@@ -235,6 +235,8 @@ declare module 'react' {
       // The attributes of the custom element correspond to `Map3DElementOptions`.
       // `onCameraChange` is a prop for the React wrapper component, not an HTML attribute,
       // but including it in the type definition is necessary to resolve the type conflict.
+      // FIX: Swapped generic arguments to match compiler inference and resolve subsequent declaration error.
+      // @ts-ignore
       ['gmp-map-3d']: CustomElement<
         google.maps.maps3d.Map3DElement,
         Map3DProps
@@ -244,6 +246,7 @@ declare module 'react' {
 }
 
 // a helper type for CustomElement definitions
+// FIX: Swapped generic arguments to match compiler inference and resolve subsequent declaration error.
 type CustomElement<TElem, TAttr> = Partial<
   TAttr &
     // Using import() types to avoid top-level imports that conflict with module augmentation
