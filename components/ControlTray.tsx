@@ -95,6 +95,8 @@ function ControlTray({trayRef}: ControlTrayProps) {
     }
     return () => {
       audioRecorder.off('data', onData);
+      // Ensure the recorder is stopped and mic is released on cleanup.
+      audioRecorder.stop();
     };
   }, [connected, client, muted, audioRecorder]);
 

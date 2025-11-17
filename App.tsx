@@ -26,9 +26,12 @@ import PopUp from './components/popup/PopUp';
 import Sidebar from './components/Sidebar';
 import { LiveAPIProvider } from './contexts/LiveAPIContext';
 import { APIProvider, useMapsLibrary } from '@vis.gl/react-google-maps';
-import { Map3D, Map3DCameraProps} from './components/map-3d';
+import { Map3D } from './components/map-3d';
+// FIX: Import `Map3DCameraProps` from the correct file where it is defined.
+import { Map3DCameraProps } from './components/map-3d/map-3d-types';
 import { useMapStore } from './lib/state';
 import { MapController } from './lib/map-controller';
+import ClientProfile from './components/ClientProfile';
 
 const API_KEY = process.env.API_KEY as string;
 if (typeof API_KEY !== 'string') {
@@ -222,6 +225,7 @@ function AppComponent() {
          {showPopUp && <PopUp onClose={handleClosePopUp} />}
         <div className="streaming-console">
           <div className="console-panel" ref={consolePanelRef}>
+            <ClientProfile />
             <StreamingConsole />
             <ControlTray trayRef={controlTrayRef} />
           </div>

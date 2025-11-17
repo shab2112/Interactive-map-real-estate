@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { itineraryPlannerTools } from './tools/itinerary-planner';
 
 export type Template = 'itinerary-planner';
@@ -27,7 +28,8 @@ import {
   LiveServerToolCall,
   GroundingChunk,
 } from '@google/genai';
-import { Map3DCameraProps } from '@/components/map-3d';
+// FIX: Import `Map3DCameraProps` from the correct file where it is defined.
+import { Map3DCameraProps } from '@/components/map-3d/map-3d-types';
 
 /**
  * Personas
@@ -99,12 +101,16 @@ export const useUI = create<{
   toggleSidebar: () => void;
   showSystemMessages: boolean;
   toggleShowSystemMessages: () => void;
+  sidebarView: 'settings' | 'favorites';
+  setSidebarView: (view: 'settings' | 'favorites') => void;
 }>(set => ({
   isSidebarOpen: false,
   toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
   showSystemMessages: false,
   toggleShowSystemMessages: () =>
     set(state => ({ showSystemMessages: !state.showSystemMessages })),
+  sidebarView: 'settings',
+  setSidebarView: (view) => set({ sidebarView: view }),
 }));
 
 /**
@@ -251,3 +257,116 @@ export const useMapStore = create<{
   setCameraTarget: target => set({ cameraTarget: target }),
   setPreventAutoFrame: prevent => set({ preventAutoFrame: prevent }),
 }));
+
+/**
+ * Client Profile
+ */
+export interface ClientProfile {
+  projectInterestedIn?: string;
+  budget?: string;
+  communitiesInterestedIn?: string;
+  workLocation?: string;
+  maxBedrooms?: string;
+  maxBathrooms?: string;
+  property_type?: string;
+  project_type?: string;
+  age?: string;
+  salary?: string;
+  isFirstProperty?: string;
+  purpose?: string;
+  downpaymentReady?: string;
+  isMarried?: string;
+  childrenCount?: string;
+  specificRequirements?: string;
+  handoverConsideration?: string;
+  needsMortgageAgent?: string;
+  needsGoldenVisa?: string;
+}
+
+const multiValueFields: ReadonlyArray<keyof ClientProfile> = [
+  'communitiesInterestedIn',
+  'projectInterestedIn',
+  'specificRequirements',
+  'property_type',
+];
+
+export const useClientProfileStore = create<{
+  profile: ClientProfile;
+  updateProfile: (field: keyof ClientProfile, value: string) => void;
+  resetProfile: () => void;
+}>((set) => ({
+  profile: {},
+  updateProfile: (field, value) => set(state => {
+    const currentProfile = state.profile;
+    const existingValue = currentProfile[field];
+    let finalValue = value;
+
+    if (multiValueFields.includes(field)) {
+      if (existingValue) {
+        // Use a Set for efficient duplicate checking.
+        const existingSet = new Set(existingValue.split(', ').map(v => v.trim()));
+        if (!existingSet.has(value.trim())) {
+          finalValue = `${existingValue}, ${value}`;
+        } else {
+          finalValue = existingValue; // Value already exists, no change needed.
+        }
+      }
+    }
+    
+    // Only update state if the value has actually changed to prevent unnecessary re-renders.
+    if (currentProfile[field] === finalValue) {
+        return state;
+    }
+
+    return {
+      profile: {
+        ...currentProfile,
+        [field]: finalValue
+      }
+    };
+  }),
+  resetProfile: () => set({ profile: {} }),
+}));
+
+/**
+ * Favorites
+ */
+export interface FavoriteProject {
+  id: string;
+  name: string;
+  community: string;
+  imageUrl: string;
+  features: string[];
+  notes: string;
+  project_specs?: {
+    avg_price_per_sqft: number;
+    unit_types: {
+      unit_type: string;
+      avg_size_sqft: number;
+    }[];
+  };
+}
+
+export const useFavoritesStore = create(
+  persist<{
+    favorites: FavoriteProject[];
+    addProject: (project: Omit<FavoriteProject, 'id'>) => void;
+    updateNotes: (projectId: string, notes: string) => void;
+  }>(
+    (set) => ({
+      favorites: [],
+      addProject: (project) => set((state) => ({
+        favorites: [...state.favorites, { ...project, id: `${project.name}-${Date.now()}`}]
+      })),
+      updateNotes: (projectId, notes) => set((state) => ({
+        favorites: state.favorites.map(p => 
+          p.id === projectId ? { ...p, notes } : p
+        )
+      })),
+    }),
+    {
+      name: 'real-estate-favorites-storage',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

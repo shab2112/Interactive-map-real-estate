@@ -19,14 +19,12 @@
  * limitations under the License.
  */
 
+// FIX: Add a type-only import to ensure this file is treated as a module, which is required for module augmentation.
+import type {} from 'react';
+// FIX: Import the module being augmented so that TypeScript can find its definitions.
+// Changed from `import type` to a regular import to resolve module augmentation error.
+import {APIProvider} from '@vis.gl/react-google-maps';
 /* eslint-disable @typescript-eslint/no-namespace, @typescript-eslint/no-explicit-any */
-
-// Using a full React import to ensure this file is treated as a module,
-// which is required for module augmentation to work correctly.
-import React from 'react';
-// FIX: An import from the module is needed for module augmentation to work.
-// Using an empty import to ensure the module is recognized by TypeScript.
-import {} from '@vis.gl/react-google-maps';
 
 // add an overload signature for the useMapsLibrary hook, so typescript
 // knows what the 'maps3d' library is.
@@ -205,19 +203,41 @@ declare global {
         roll?: number;
         tilt?: number;
         defaultUIHidden?: boolean;
+        // FIX: Add mode property to allow it to be passed as a JSX attribute.
+        mode?: 'HYBRID' | 'SATELLITE';
       }
     }
   }
 }
+
+// FIX: Moved Map3DCameraProps and Map3DProps here to resolve circular dependencies
+// and define the props for the custom element in one place.
+export type Map3DCameraProps = {
+  center: google.maps.LatLngAltitudeLiteral;
+  range: number;
+  heading: number;
+  tilt: number;
+  roll: number;
+};
+
+export type Map3DProps = google.maps.maps3d.Map3DElementOptions & {
+  onCameraChange?: (cameraProps: Map3DCameraProps) => void;
+};
 
 // add the <gmp-map-3d> custom-element to the JSX.IntrinsicElements
 // interface, so it can be used in jsx
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
+      // FIX: The attributes of the custom element should be based on the element's options
+      // interface, not the element class itself. This resolves the type mismatch.
+      // FIX: Changed attributes to Map3DProps to match the other declaration inferred by the compiler.
+      // The attributes of the custom element correspond to `Map3DElementOptions`.
+      // `onCameraChange` is a prop for the React wrapper component, not an HTML attribute,
+      // but including it in the type definition is necessary to resolve the type conflict.
       ['gmp-map-3d']: CustomElement<
         google.maps.maps3d.Map3DElement,
-        google.maps.maps3d.Map3DElement
+        Map3DProps
       >;
     }
   }
@@ -226,10 +246,14 @@ declare module 'react' {
 // a helper type for CustomElement definitions
 type CustomElement<TElem, TAttr> = Partial<
   TAttr &
-    React.DOMAttributes<TElem> &
-    React.RefAttributes<TElem> & {
+    // Using import() types to avoid top-level imports that conflict with module augmentation
+    import('react').DOMAttributes<TElem> &
+    import('react').RefAttributes<TElem> & {
       // for whatever reason, anything else doesn't work as children
       // of a custom element, so we allow `any` here
       children: any;
     }
 >;
+
+// FIX: Ensure this file is treated as a module to allow for module augmentation.
+export {};

@@ -1,0 +1,117 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+*/
+.favorite-card {
+  background-color: var(--Neutral-10);
+  border: 1px solid var(--border-stroke);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.favorite-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.favorite-card-content {
+  padding: 16px;
+}
+
+.favorite-card-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--Neutral-90);
+  margin-bottom: 4px;
+}
+
+.favorite-card-community {
+  font-size: 14px;
+  color: var(--Neutral-60);
+  margin-bottom: 16px;
+}
+
+.favorite-card-section-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.favorite-card-features {
+  padding-left: 18px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--Neutral-80);
+}
+
+.favorite-card-features li {
+  list-style-type: disc;
+  margin-bottom: 6px;
+}
+
+.favorite-card-specs {
+  font-size: 14px;
+  color: var(--Neutral-80);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spec-item .spec-label {
+  font-weight: 500;
+  color: var(--Neutral-60);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.spec-item .spec-value {
+  padding-left: 1em;
+}
+
+.spec-item .spec-unit-list {
+  padding-left: 1em;
+  margin: 0;
+  list-style-type: none;
+}
+
+.spec-unit-list li {
+  position: relative;
+  padding-left: 1em;
+}
+.spec-unit-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent-blue);
+}
+
+.spec-unit-list strong {
+  font-weight: 500;
+  color: var(--Neutral-90);
+}
+
+.favorite-card-notes {
+  width: 100%;
+  min-height: 100px;
+  background-color: var(--Neutral-15);
+  border: 1px solid var(--gray-800);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  color: var(--Neutral-90);
+  resize: vertical;
+}
+
+.favorite-card-notes:focus {
+  outline: none;
+  border-color: var(--accent-blue-active);
+  box-shadow: 0 0 0 2px var(--accent-blue-active-bg);
+}

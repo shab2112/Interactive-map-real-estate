@@ -23,7 +23,8 @@
  * limitations under the License.
  */
 
-import { Map3DCameraProps } from '@/components/map-3d';
+// FIX: Import `Map3DCameraProps` from the correct file where it is defined.
+import { Map3DCameraProps } from '@/components/map-3d/map-3d-types';
 import { lookAtWithPadding } from './look-at';
 import { MapMarker } from './state';
 

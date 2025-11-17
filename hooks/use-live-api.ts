@@ -29,8 +29,7 @@ import { GenAILiveClient } from '../../lib/genai-live-client';
 import { LiveConnectConfig, Modality, LiveServerToolCall } from '@google/genai';
 import { AudioStreamer } from '../../lib/audio-streamer';
 import { audioContext } from '../../lib/utils';
-import VolMeterWorket from '../../lib/worklets/vol-meter';
-import { useLogStore, useMapStore, useSettings } from '@/lib/state';
+import { useLogStore, useMapStore, useSettings, useClientProfileStore } from '@/lib/state';
 import { GenerateContentResponse, GroundingChunk } from '@google/genai';
 import { ToolContext, toolRegistry } from '@/lib/tools/tool-registry';
 
@@ -45,9 +44,6 @@ export type UseLiveApiResults = {
  connect: () => Promise<void>;
  disconnect: () => void;
  connected: boolean;
-
-
- volume: number;
  heldGroundingChunks: GroundingChunk[] | undefined;
  clearHeldGroundingChunks: () => void;
  heldGroundedResponse: GenerateContentResponse | undefined;
@@ -77,8 +73,8 @@ export function useLiveApi({
  const audioStreamerRef = useRef<AudioStreamer | null>(null);
 
 
- const [volume, setVolume] = useState(0);
  const [connected, setConnected] = useState(false);
+ const [sessionLost, setSessionLost] = useState(false);
  const [streamerReady, setStreamerReady] = useState(false);
  const [config, setConfig] = useState<LiveConnectConfig>({});
  const [heldGroundingChunks, setHeldGroundingChunks] = useState<
@@ -102,13 +98,6 @@ export function useLiveApi({
      audioContext({ id: 'audio-out' }).then((audioCtx: AudioContext) => {
        audioStreamerRef.current = new AudioStreamer(audioCtx);
        setStreamerReady(true);
-       audioStreamerRef.current
-         .addWorklet<any>('vumeter-out', VolMeterWorket, (ev: any) => {
-           setVolume(ev.data.volume);
-         })
-         .catch(err => {
-           console.error('Error adding worklet:', err);
-         });
      });
    }
  }, []);
@@ -127,12 +116,24 @@ export function useLiveApi({
    const onClose = (event: CloseEvent) => {
      setConnected(false);
      stopAudioStreamer();
-     let reason = "Session ended. Press 'Play' to start a new session. "+ event.reason;
+
+     let reason;
+     if (event.code === 1000) {
+       // Normal, intentional closure
+       reason = "Session ended. Press 'Play' to start a new session.";
+       setSessionLost(false);
+     } else {
+       // Abnormal closure, e.g., network error
+       const reasonText = event.reason ? ` Reason: ${event.reason}` : '';
+       reason = `Connection lost (Code: ${event.code}). Your session has been saved. Press 'Play' to reconnect.${reasonText}`;
+       setSessionLost(true);
+     }
+
      useLogStore.getState().addTurn({
-         role: 'agent',
-         text: reason,
-         isFinal: true,
-       });
+       role: 'agent',
+       text: reason,
+       isFinal: true,
+     });
    };
 
 
@@ -172,24 +173,17 @@ export function useLiveApi({
    /**
      * Handles incoming `toolcall` events from the Gemini Live API. This function
      * acts as the central dispatcher for all function calls requested by the model.
-     *
-     * The process is as follows:
-     * 1. Sets a UI state flag (`isAwaitingFunctionResponse`) to show a spinner.
-     * 2. Iterates through each function call in the `toolCall` payload.
-     * 3. Logs the function call to the system messages for debugging and visibility.
-     * 4. Looks up the corresponding tool implementation in the `toolRegistry` by name.
-     * 5. Executes the tool's function, passing the model-provided arguments and a
-     *    `toolContext` object. This context gives the tool access to shared
-     *    resources like the map instance, map libraries, and state setters, without
-     *    tightly coupling the tool logic to React components.
-     * 6. Packages the tool's return value into a `functionResponse` object.
-     * 7. After all function calls are executed, it sends the collected responses
-     *    back to the Gemini API using `client.sendToolResponse`. This provides the
-     *    model with the information it needs to continue the conversation.
-     * 8. Clears the UI spinner state.
      */
    const onToolCall = async (toolCall: LiveServerToolCall) => {
-     useLogStore.getState().setIsAwaitingFunctionResponse(true);
+     // A background task should not trigger a loading spinner in the UI.
+     const isBackgroundTask = toolCall.functionCalls.every(
+        fc => fc.name === 'updateClientProfile'
+     );
+
+     if (!isBackgroundTask) {
+      useLogStore.getState().setIsAwaitingFunctionResponse(true);
+     }
+
      try {
        const functionResponses: any[] = [];
        const toolContext: ToolContext = {
@@ -268,7 +262,9 @@ export function useLiveApi({
 
        client.sendToolResponse({ functionResponses: functionResponses });
      } finally {
-       useLogStore.getState().setIsAwaitingFunctionResponse(false);
+      if (!isBackgroundTask) {
+        useLogStore.getState().setIsAwaitingFunctionResponse(false);
+      }
      }
    };
 
@@ -285,6 +281,12 @@ export function useLiveApi({
      client.off('audio', onAudio);
      client.off('toolcall', onToolCall);
      client.off('generationcomplete', onGenerationComplete);
+     
+     // Ensure graceful disconnection when the hook is torn down.
+     // This prevents abrupt WebSocket closures that can cause server-side errors.
+      if (client.status === 'connected') {
+        client.disconnect();
+      }
    };
  }, [client, map, placesLib, elevationLib, geocoder, padding, setHeldGroundedResponse, setHeldGroundingChunks]);
 
@@ -293,11 +295,15 @@ export function useLiveApi({
    if (!config) {
      throw new Error('config has not been set');
    }
-   useLogStore.getState().clearTurns();
-   useMapStore.getState().clearMarkers();
+   if (!sessionLost) {
+     useLogStore.getState().clearTurns();
+     useMapStore.getState().clearMarkers();
+     useClientProfileStore.getState().resetProfile();
+   }
+   setSessionLost(false); // Reset after use
    client.disconnect();
    await client.connect(config);
- }, [client, config]);
+ }, [client, config, sessionLost]);
 
 
  const disconnect = useCallback(async () => {
@@ -313,7 +319,6 @@ export function useLiveApi({
    connect,
    connected,
    disconnect,
-   volume,
    heldGroundingChunks,
    clearHeldGroundingChunks,
    heldGroundedResponse,

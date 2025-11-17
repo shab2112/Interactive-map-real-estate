@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 import React, { useEffect, useMemo } from 'react';
-import { useSettings, useUI, useLogStore, useTools, personas } from '@/lib/state';
+import { useSettings, useUI, useLogStore, useTools, personas, useMapStore, useClientProfileStore } from '@/lib/state';
 import c from 'classnames';
 import {
   AVAILABLE_VOICES_FULL,
@@ -12,6 +12,8 @@ import {
   DEFAULT_VOICE,
 } from '@/lib/constants';
 import { useLiveAPIContext } from '@/contexts/LiveAPIContext';
+import FavoritesPanel from './favorites/FavoritesPanel';
+
 
 const AVAILABLE_MODELS = [
   'gemini-2.5-flash-native-audio-preview-09-2025',
@@ -26,6 +28,8 @@ export default function Sidebar() {
     toggleSidebar,
     showSystemMessages,
     toggleShowSystemMessages,
+    sidebarView,
+    setSidebarView,
   } = useUI();
   const {
     systemPrompt,
@@ -38,7 +42,7 @@ export default function Sidebar() {
     activePersona,
     setPersona,
   } = useSettings();
-  const { connected } = useLiveAPIContext();
+  const { connected, disconnect } = useLiveAPIContext();
 
   const availableVoices = useMemo(() => {
     return MODELS_WITH_LIMITED_VOICES.includes(model)
@@ -83,104 +87,132 @@ export default function Sidebar() {
     URL.revokeObjectURL(url);
   };
 
+  const handleResetSession = () => {
+    useLogStore.getState().clearTurns();
+    useMapStore.getState().clearMarkers();
+    useClientProfileStore.getState().resetProfile();
+    if (connected) {
+      disconnect();
+    }
+  };
+
   return (
     <>
       <aside className={c('sidebar', { open: isSidebarOpen })}>
         <div className="sidebar-header">
-          <h3>Settings</h3>
+          <h3>Menu</h3>
           <button onClick={toggleSidebar} className="close-button">
             <span className="icon">close</span>
           </button>
         </div>
-        <div className="sidebar-content">
-          <div className="sidebar-section">
-            <fieldset disabled={connected}>
-              {isEasterEggMode && (
+        <div className="sidebar-tabs">
+          <button 
+            className={c('sidebar-tab', { active: sidebarView === 'settings' })}
+            onClick={() => setSidebarView('settings')}
+          >
+            Settings
+          </button>
+          <button 
+            className={c('sidebar-tab', { active: sidebarView === 'favorites' })}
+            onClick={() => setSidebarView('favorites')}
+          >
+            Favorites
+          </button>
+        </div>
+        
+        {sidebarView === 'settings' ? (
+          <div className="sidebar-content">
+            <div className="sidebar-section">
+              <fieldset disabled={connected}>
+                {isEasterEggMode && (
+                  <label>
+                    Persona
+                    <select
+                      value={activePersona}
+                      onChange={e => setPersona(e.target.value)}
+                    >
+                      {Object.keys(personas).map(personaName => (
+                        <option key={personaName} value={personaName}>
+                          {personaName}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
                 <label>
-                  Persona
+                  System Prompt
+                  <textarea
+                    value={systemPrompt}
+                    onChange={e => setSystemPrompt(e.target.value)}
+                    rows={10}
+                    placeholder="Describe the role and personality of the AI..."
+                    disabled={isEasterEggMode}
+                  />
+                </label>
+                <label>
+                  Model
                   <select
-                    value={activePersona}
-                    onChange={e => setPersona(e.target.value)}
+                    value={model}
+                    onChange={e => setModel(e.target.value)}
+                    disabled={!isEasterEggMode}
                   >
-                    {Object.keys(personas).map(personaName => (
-                      <option key={personaName} value={personaName}>
-                        {personaName}
+                    {/* This is an experimental model name that should not be removed from the options. */}
+                    {AVAILABLE_MODELS.map(m => (
+                      <option key={m} value={m}>
+                        {m}
                       </option>
                     ))}
                   </select>
                 </label>
-              )}
-              <label>
-                System Prompt
-                <textarea
-                  value={systemPrompt}
-                  onChange={e => setSystemPrompt(e.target.value)}
-                  rows={10}
-                  placeholder="Describe the role and personality of the AI..."
-                  disabled={isEasterEggMode}
-                />
-              </label>
-              <label>
-                Model
-                <select
-                  value={model}
-                  onChange={e => setModel(e.target.value)}
-                  disabled={!isEasterEggMode}
+                <label>
+                  Voice
+                  <select
+                    value={voice}
+                    onChange={e => setVoice(e.target.value)}
+                  >
+                    {availableVoices.map(v => (
+                      <option key={v.name} value={v.name}>
+                        {v.name} ({v.description})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </fieldset>
+              <div className="settings-toggle-item">
+                <label className="tool-checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="system-message-toggle"
+                    checked={showSystemMessages}
+                    onChange={toggleShowSystemMessages}
+                  />
+                  <span className="checkbox-visual"></span>
+                </label>
+                <label
+                  htmlFor="system-message-toggle"
+                  className="settings-toggle-label"
                 >
-                  {/* This is an experimental model name that should not be removed from the options. */}
-                  {AVAILABLE_MODELS.map(m => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Voice
-                <select
-                  value={voice}
-                  onChange={e => setVoice(e.target.value)}
-                >
-                  {availableVoices.map(v => (
-                    <option key={v.name} value={v.name}>
-                      {v.name} ({v.description})
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </fieldset>
-            <div className="settings-toggle-item">
-              <label className="tool-checkbox-wrapper">
-                <input
-                  type="checkbox"
-                  id="system-message-toggle"
-                  checked={showSystemMessages}
-                  onChange={toggleShowSystemMessages}
-                />
-                <span className="checkbox-visual"></span>
-              </label>
-              <label
-                htmlFor="system-message-toggle"
-                className="settings-toggle-label"
+                  Show system messages
+                </label>
+              </div>
+            </div>
+            <div className="sidebar-actions">
+              <button onClick={handleExportLogs} title="Export session logs">
+                <span className="icon">download</span>
+                Export Logs
+              </button>
+              <button
+                onClick={handleResetSession}
+                title="Reset session logs"
               >
-                Show system messages
-              </label>
+                <span className="icon">refresh</span>
+                Reset Session
+              </button>
             </div>
           </div>
-          <div className="sidebar-actions">
-            <button onClick={handleExportLogs} title="Export session logs">
-              <span className="icon">download</span>
-              Export Logs
-            </button>
-            <button
-              onClick={useLogStore.getState().clearTurns}
-              title="Reset session logs"
-            >
-              <span className="icon">refresh</span>
-              Reset Session
-            </button>
-          </div>
-        </div>
+        ) : (
+          <FavoritesPanel />
+        )}
       </aside>
     </>
   );

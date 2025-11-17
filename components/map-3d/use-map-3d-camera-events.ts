@@ -22,7 +22,8 @@
  */
 
 import {useEffect, useRef} from 'react';
-import {Map3DCameraProps} from './map-3d';
+// FIX: Update import path for Map3DCameraProps.
+import {Map3DCameraProps} from './map-3d-types';
 
 const cameraPropNames = ['center', 'range', 'heading', 'tilt', 'roll'] as const;
 

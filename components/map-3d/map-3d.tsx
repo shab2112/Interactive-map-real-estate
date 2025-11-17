@@ -32,19 +32,8 @@ import React, {
 import {useMap3DCameraEvents} from './use-map-3d-camera-events';
 import {useCallbackRef, useDeepCompareEffect} from './utility-hooks';
 
-import './map-3d-types';
-
-export type Map3DProps = google.maps.maps3d.Map3DElementOptions & {
-  onCameraChange?: (cameraProps: Map3DCameraProps) => void;
-};
-
-export type Map3DCameraProps = {
-  center: google.maps.LatLngAltitudeLiteral;
-  range: number;
-  heading: number;
-  tilt: number;
-  roll: number;
-};
+// FIX: Import types from map-3d-types.ts and remove local definitions.
+import {Map3DProps, Map3DCameraProps} from './map-3d-types';
 
 export const Map3D = forwardRef(
   (
